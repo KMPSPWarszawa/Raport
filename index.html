@@ -1,209 +1,417 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karta Zdarzenia</title>
+    <title>Karta Zdarzenia — PSP System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #151f32;
+            --bg-input: #0e1726;
+            --bg-subcard: #1c2a43;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-focus: #ef4444;
+            --primary-red: #dc2626;
+            --primary-red-hover: #b91c1c;
+            --accent-glow: rgba(220, 38, 38, 0.35);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-placeholder: #64748b;
+        }
+
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
+
         body {
-            background-color: #eef0f2;
-            padding: 30px 15px;
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(30, 58, 138, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #333;
+            color: var(--text-main);
         }
-        h1 {
-            color: #b30000;
-            margin-bottom: 25px;
-            font-size: 2rem;
+
+        .header-container {
             text-align: center;
+            margin-bottom: 35px;
         }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            color: #fca5a5;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
         .form-container {
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
+
         .card {
-            background-color: #e2e4e7;
-            border-left: 6px solid #b30000;
-            border-radius: 4px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-red);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-icon {
+            font-size: 1.4rem;
+        }
+
         .card-title {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #111;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .field {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
+
         .field:last-child {
             margin-bottom: 0;
         }
+
         .field label {
-            display: block;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-            color: #111;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 8px;
+            color: #e2e8f0;
         }
-        .field input, .field textarea {
+
+        .field input, .field select, .field textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 0.95rem;
             outline: none;
-            background-color: #ffffff;
-            transition: border-color 0.2s;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            transition: all 0.2s ease;
         }
-        .field input:focus, .field textarea:focus {
-            border-color: #b30000;
+
+        .field select option {
+            background-color: var(--bg-card);
+            color: var(--text-main);
         }
+
+        .field input::placeholder, .field textarea::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background-color: #111a2e;
+        }
+
         .field textarea {
             resize: vertical;
-            min-height: 90px;
+            min-height: 100px;
+            line-height: 1.5;
         }
+
+        /* Custom Time Picker icon styling */
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
         .zastep-box {
-            background-color: #d5d8dc;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            position: relative;
+            background-color: var(--bg-subcard);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
         .zastep-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
+
         .zastep-title {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #111;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
         .btn-remove {
-            background: #d9534f;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 3px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 6px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
+
         .btn-remove:hover {
-            background: #c9302c;
+            background: rgba(239, 68, 68, 0.3);
+            color: #ffffff;
+            border-color: var(--primary-red);
         }
-        .btn {
-            background-color: #b30000;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 4px;
+
+        .btn-add {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-            display: inline-block;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .btn:hover {
-            background-color: #800000;
+
+        .btn-add:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
         }
+
         .btn-submit-container {
             text-align: center;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.6);
+            background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         #status-msg {
             text-align: center;
-            margin-top: 12px;
-            font-weight: bold;
+            margin-top: 16px;
+            font-weight: 600;
             font-size: 1rem;
+            min-height: 24px;
         }
+
         .status-success {
-            color: #2e7d32;
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
         }
+
         .status-error {
-            color: #c62828;
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+        }
+
+        .status-sending {
+            color: #38bdf8;
         }
     </style>
 </head>
 <body>
 
-    <h1>Karta Zdarzenia</h1>
+    <div class="header-container">
+        <div class="header-badge">🚒 Państwowa Straż Pożarna</div>
+        <h1>Karta Zdarzenia</h1>
+    </div>
 
     <form id="reportForm" class="form-container">
         <!-- Sekcja 1: Podstawowe informacje -->
         <div class="card">
+            <div class="card-header">
+                <span class="card-icon">📌</span>
+                <span class="card-title">Informacje Podstawowe</span>
+            </div>
+            
             <div class="field">
-                <label>Kierujący działaniami</label>
+                <label>Kierujący działaniami (KDR)</label>
                 <input type="text" id="kdr" required placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
             </div>
+
             <div class="field">
                 <label>Wypełnianie KZ z uprawnienia</label>
-                <input type="text" id="uprawnienie" placeholder="Opcjonalnie">
+                <select id="uprawnienie">
+                    <option value="">-- Wybierz opcjonalnie --</option>
+                    <option value="Dowódca Zastępu">Dowódca Zastępu</option>
+                    <option value="Kierujący Działaniami Ratowniczymi">Kierujący Działaniami Ratowniczymi</option>
+                    <option value="Dowódca Sekcji">Dowódca Sekcji</option>
+                    <option value="Dowódca Pododdziału">Dowódca Pododdziału</option>
+                </select>
             </div>
-            <div class="field">
-                <label>Kategoria zdarzenia</label>
-                <input type="text" id="kategoria" required placeholder="np. MZ - Miejscowe Zagrożenie">
-            </div>
-            <div class="field">
-                <label>Wielkość zdarzenia</label>
-                <input type="text" id="wielkosc" required placeholder="np. Lokalne">
+
+            <div class="grid-2">
+                <div class="field">
+                    <label>Kategoria zdarzenia</label>
+                    <input type="text" id="kategoria" required placeholder="np. MZ - Miejscowe Zagrożenie">
+                </div>
+                <div class="field">
+                    <label>Wielkość zdarzenia</label>
+                    <input type="text" id="wielkosc" required placeholder="np. Lokalne / Małe / Średnie">
+                </div>
             </div>
         </div>
 
         <!-- Sekcja 2: Obsada Zastępów -->
         <div class="card">
-            <div class="card-title">Obsada zastępów PSP</div>
+            <div class="card-header">
+                <span class="card-icon">🧑‍🚒</span>
+                <span class="card-title">Obsada zastępów PSP</span>
+            </div>
+            
             <div id="zastepy-container">
                 <!-- Dynamicznie dodawane zastępy -->
             </div>
-            <button type="button" class="btn" onclick="addZastep()">+ Dodaj kolejny zastęp</button>
+
+            <button type="button" class="btn-add" onclick="addZastep()">
+                <span>➕</span> Dodaj kolejny zastęp
+            </button>
         </div>
 
         <!-- Sekcja 3: Szczegóły akcji -->
         <div class="card">
+            <div class="card-header">
+                <span class="card-icon">📝</span>
+                <span class="card-title">Szczegóły i Przebieg Akcji</span>
+            </div>
+
             <div class="field">
                 <label>Zadysponowane SiŚ</label>
                 <input type="text" id="sis" required placeholder="np. 401-51, 409-71">
             </div>
-            <div class="field">
-                <label>Godzina przybycia</label>
-                <input type="time" id="godzina_przybycia" required>
+
+            <div class="grid-2">
+                <div class="field">
+                    <label>Godzina przybycia</label>
+                    <input type="time" id="godzina_przybycia" required>
+                </div>
+                <div class="field">
+                    <label>Godzina zakończenia</label>
+                    <input type="time" id="godzina_zakonczenia" required>
+                </div>
             </div>
+
             <div class="field">
-                <label>Godzina zakończenia</label>
-                <input type="time" id="godzina_zakonczenia" required>
-            </div>
-            <div class="field">
-                <label>Lokalizacja</label>
+                <label>Lokalizacja zdarzenia</label>
                 <input type="text" id="lokalizacja" required placeholder="np. Bytów, ul Styp-Rekowskiego 6">
             </div>
+
             <div class="field">
                 <label>Opis zdarzenia</label>
-                <textarea id="opis" required placeholder="Opisz przebieg zdarzenia oraz podjęte działania..."></textarea>
+                <textarea id="opis" required placeholder="Opisz stan faktyczny po przybyciu oraz podjęte działania ratownicze..."></textarea>
             </div>
+
             <div class="field">
-                <label>Sporządzający</label>
+                <label>Sporządzający raport</label>
                 <input type="text" id="sporzadzajacy" required placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
             </div>
         </div>
 
+        <!-- Przycisk wysyłania -->
         <div class="btn-submit-container">
-            <button type="submit" id="submitBtn" class="btn" style="padding: 12px 35px; font-size: 1rem;">Wyślij raport</button>
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <span>🚀</span> Wyślij raport na Discorda
+            </button>
             <div id="status-msg"></div>
         </div>
     </form>
@@ -224,36 +432,44 @@
 
             zastepDiv.innerHTML = `
                 <div class="zastep-header">
-                    <div class="zastep-title">Zastęp ${container.children.length + 1}</div>
+                    <div class="zastep-title">
+                        <span>🚒</span> Zastęp ${container.children.length + 1}
+                    </div>
                     ${canRemove ? `<button type="button" class="btn-remove" onclick="removeZastep('${zastepDiv.id}')">Usuń zastęp</button>` : ''}
                 </div>
                 <div class="field">
                     <label>Pojazd</label>
                     <input type="text" class="z-pojazd" placeholder="np. 401-51">
                 </div>
-                <div class="field">
-                    <label>Kierowca</label>
-                    <input type="text" class="z-kierowca">
+                <div class="grid-2">
+                    <div class="field">
+                        <label>Kierowca</label>
+                        <input type="text" class="z-kierowca" placeholder="Stopień, Imię Nazwisko">
+                    </div>
+                    <div class="field">
+                        <label>Dowódca</label>
+                        <input type="text" class="z-dowodca" placeholder="Stopień, Imię Nazwisko">
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Dowódca</label>
-                    <input type="text" class="z-dowodca">
+                <div class="grid-2">
+                    <div class="field">
+                        <label>R1</label>
+                        <input type="text" class="z-r1">
+                    </div>
+                    <div class="field">
+                        <label>Pomocnik R1</label>
+                        <input type="text" class="z-pom-r1">
+                    </div>
                 </div>
-                <div class="field">
-                    <label>R1</label>
-                    <input type="text" class="z-r1">
-                </div>
-                <div class="field">
-                    <label>Pomocnik R1</label>
-                    <input type="text" class="z-pom-r1">
-                </div>
-                <div class="field">
-                    <label>R2</label>
-                    <input type="text" class="z-r2">
-                </div>
-                <div class="field">
-                    <label>Pomocnik R2</label>
-                    <input type="text" class="z-pom-r2">
+                <div class="grid-2">
+                    <div class="field">
+                        <label>R2</label>
+                        <input type="text" class="z-r2">
+                    </div>
+                    <div class="field">
+                        <label>Pomocnik R2</label>
+                        <input type="text" class="z-pom-r2">
+                    </div>
                 </div>
             `;
             container.appendChild(zastepDiv);
@@ -273,12 +489,12 @@
             boxes.forEach((box, index) => {
                 const title = box.querySelector('.zastep-title');
                 if (title) {
-                    title.innerText = `Zastęp ${index + 1}`;
+                    title.innerHTML = `<span>🚒</span> Zastęp ${index + 1}`;
                 }
             });
         }
 
-        // Dodaj domyślnie 1 zastęp
+        // Dodaj domyślnie 1 zastęp na start
         addZastep();
 
         document.getElementById('reportForm').addEventListener('submit', async function(e) {
@@ -286,8 +502,8 @@
             const statusMsg = document.getElementById('status-msg');
             const submitBtn = document.getElementById('submitBtn');
 
-            statusMsg.className = '';
-            statusMsg.innerText = 'Wysyłanie raportu na Discorda...';
+            statusMsg.className = 'status-sending';
+            statusMsg.innerText = '⏳ Wysyłanie raportu na Discorda...';
             submitBtn.disabled = true;
 
             const kdr = document.getElementById('kdr').value.trim();
@@ -311,23 +527,14 @@
                     return (inp && inp.value.trim()) ? inp.value.trim() : "Brak";
                 };
 
-                zastepyText += `🚒 **Zastęp ${index + 1}**
-`;
-                zastepyText += `Pojazd: ${getVal('.z-pojazd')}
-`;
-                zastepyText += `Kierowca: ${getVal('.z-kierowca')}
-`;
-                zastepyText += `Dowódca: ${getVal('.z-dowodca')}
-`;
-                zastepyText += `R1: ${getVal('.z-r1')}
-`;
-                zastepyText += `Pomocnik R1: ${getVal('.z-pom-r1')}
-`;
-                zastepyText += `R2: ${getVal('.z-r2')}
-`;
-                zastepyText += `Pomocnik R2: ${getVal('.z-pom-r2')}
-
-`;
+                zastepyText += `🚒 **Zastęp ${index + 1}**\n`;
+                zastepyText += `Pojazd: ${getVal('.z-pojazd')}\n`;
+                zastepyText += `Kierowca: ${getVal('.z-kierowca')}\n`;
+                zastepyText += `Dowódca: ${getVal('.z-dowodca')}\n`;
+                zastepyText += `R1: ${getVal('.z-r1')}\n`;
+                zastepyText += `Pomocnik R1: ${getVal('.z-pom-r1')}\n`;
+                zastepyText += `R2: ${getVal('.z-r2')}\n`;
+                zastepyText += `Pomocnik R2: ${getVal('.z-pom-r2')}\n\n`;
             });
 
             // Sformatuj godzinę do stopki (np. "Dziś o 18:34")
@@ -337,57 +544,28 @@
             const footerText = `Dziś o ${hours}:${minutes}`;
 
             let description = 
-                `🔴 **Kierujący działaniami**
-${kdr}
-
-`;
+                `🔴 **Kierujący działaniami**\n${kdr}\n\n`;
 
             if (uprawnienie) {
-                description += `📑 **Uprawnienie**
-${uprawnienie}
-
-`;
+                description += `📑 **Uprawnienie**\n${uprawnienie}\n\n`;
             }
 
             description += 
-                `📁 **Kategoria**
-${kategoria}
-
-` +
-                `📏 **Wielkość**
-${wielkosc}
-
-` +
-                `👤 **Obsada PSP**
-${zastepyText}` +
-                `📍 **Lokalizacja**
-${lokalizacja}
-
-` +
-                `⏱️ **Przybycie**
-${przybycie}
-
-` +
-                `⏱️ **Zakończenie**
-${zakonczenie}
-
-` +
-                `🚒 **SiŚ**
-${sis}
-
-` +
-                `📝 **Opis**
-${opis}
-
-` +
-                `✍️ **Sporządzający**
-${sporzadzajacy}`;
+                `📁 **Kategoria**\n${kategoria}\n\n` +
+                `📏 **Wielkość**\n${wielkosc}\n\n` +
+                `👤 **Obsada PSP**\n${zastepyText}` +
+                `📍 **Lokalizacja**\n${lokalizacja}\n\n` +
+                `⏱️ **Przybycie**\n${przybycie}\n\n` +
+                `⏱️ **Zakończenie**\n${zakonczenie}\n\n` +
+                `🚒 **SiŚ**\n${sis}\n\n` +
+                `📝 **Opis**\n${opis}\n\n` +
+                `✍️ **Sporządzający**\n${sporzadzajacy}`;
 
             const payload = {
                 embeds: [
                     {
                         title: "📋 Karta Zdarzenia",
-                        color: 3447003, // Jasno-niebieski pasek z boku
+                        color: 3447003, // Niebieski pasek z boku jak w oryginale
                         description: description,
                         footer: {
                             text: footerText
@@ -421,3 +599,6 @@ ${sporzadzajacy}`;
     </script>
 </body>
 </html>
+"""
+
+print("HTML with select options updated.")
