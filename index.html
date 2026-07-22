@@ -169,6 +169,11 @@
             background-color: #111a2e;
         }
 
+        .field select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .field textarea {
             resize: vertical;
             min-height: 100px;
@@ -324,8 +329,8 @@
             </div>
             
             <div class="field">
-                <label>Kierujący działaniami (KDR)</label>
-                <input type="text" id="kdr" required placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
+                <label>Kierujący działaniami</label>
+                <input type="text" id="kdr" placeholder="np. GRACII Leonard - [NadBryg] KG PSP Warszawa">
             </div>
 
             <div class="field">
@@ -340,7 +345,7 @@
             <div class="grid-2">
                 <div class="field">
                     <label>Kategoria zdarzenia</label>
-                    <select id="kategoria" required>
+                    <select id="kategoria">
                         <option value="">-- Wybierz kategorię --</option>
                         <option value="Pożar">Pożar</option>
                         <option value="MZ - Miejscowe Zagrożenie">MZ - Miejscowe Zagrożenie</option>
@@ -348,14 +353,9 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label>Wielkość zdarzenia</label>
-                    <select id="wielkosc" required>
-                        <option value="">-- Wybierz wielkość --</option>
-                        <option value="Lokalne">Lokalne</option>
-                        <option value="Małe">Małe</option>
-                        <option value="Średnie">Średnie</option>
-                        <option value="Duże">Duże</option>
-                        <option value="Bardzo Duże">Bardzo Duże</option>
+                    <label id="label-wielkosc">Wielkość / Rodzaj zdarzenia</label>
+                    <select id="wielkosc" disabled>
+                        <option value="">-- Najpierw wybierz kategorię --</option>
                     </select>
                 </div>
             </div>
@@ -386,33 +386,33 @@
 
             <div class="field">
                 <label>Zadysponowane SiŚ</label>
-                <input type="text" id="sis" required placeholder="np. 401-51, 409-71">
+                <input type="text" id="sis" placeholder="np. WF 301-21, 301-51">
             </div>
 
             <div class="grid-2">
                 <div class="field">
                     <label>Godzina przybycia</label>
-                    <input type="time" id="godzina_przybycia" required>
+                    <input type="time" id="godzina_przybycia">
                 </div>
                 <div class="field">
                     <label>Godzina zakończenia</label>
-                    <input type="time" id="godzina_zakonczenia" required>
+                    <input type="time" id="godzina_zakonczenia">
                 </div>
             </div>
 
             <div class="field">
                 <label>Lokalizacja zdarzenia</label>
-                <input type="text" id="lokalizacja" required placeholder="np. Bytów, ul Styp-Rekowskiego 6">
+                <input type="text" id="lokalizacja" placeholder="np. Bytów, ul Styp-Rekowskiego 6">
             </div>
 
             <div class="field">
                 <label>Opis zdarzenia</label>
-                <textarea id="opis" required placeholder="Opisz stan faktyczny po przybyciu oraz podjęte działania ratownicze..."></textarea>
+                <textarea id="opis" placeholder="Opisz stan faktyczny po przybyciu oraz podjęte działania ratownicze..."></textarea>
             </div>
 
             <div class="field">
                 <label>Sporządzający raport</label>
-                <input type="text" id="sporzadzajacy" required placeholder="np. Gracii Leonard - [NadBryg.]">
+                <input type="text" id="sporzadzajacy" placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
             </div>
         </div>
 
@@ -428,6 +428,63 @@
     <script>
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1529522413988085923/a5UQzsWkWak_Sil5RaelCEgcc5mXIrKwZSp-_dgtPzxnxLePiCdltyeLOWHybLCMk9YZ";
         let zastepCounter = 0;
+
+        // Pomocnicza funkcja: jeśli wartość jest pusta lub zawiera tylko spacje, zwraca "Brak"
+        function formatValue(val) {
+            return (val && val.trim() !== "") ? val.trim() : "Brak";
+        }
+
+        // Opcje wielkości zależne od kategorii zdarzenia
+        const wielkoscOptions = {
+            "Pożar": [
+                "Mały",
+                "Średni",
+                "Duży",
+                "Bardzo Duży"
+            ],
+            "MZ - Miejscowe Zagrożenie": [
+                "Lokalne",
+                "Małe",
+                "Średnie",
+                "Duże",
+                "Bardzo Duże"
+            ],
+            "AF - Alarm Fałszywy": [
+                "W dobrej wierze",
+                "Złośliwy",
+                "Z instalacji wykrywania"
+            ]
+        };
+
+        const kategoriaSelect = document.getElementById('kategoria');
+        const wielkoscSelect = document.getElementById('wielkosc');
+
+        kategoriaSelect.addEventListener('change', function() {
+            const selectedCat = this.value;
+            wielkoscSelect.innerHTML = '';
+
+            if (selectedCat && wielkoscOptions[selectedCat]) {
+                wielkoscSelect.disabled = false;
+                
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = '-- Wybierz opcję --';
+                wielkoscSelect.appendChild(defaultOpt);
+
+                wielkoscOptions[selectedCat].forEach(optionText => {
+                    const opt = document.createElement('option');
+                    opt.value = optionText;
+                    opt.textContent = optionText;
+                    wielkoscSelect.appendChild(opt);
+                });
+            } else {
+                wielkoscSelect.disabled = true;
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = '-- Najpierw wybierz kategorię --';
+                wielkoscSelect.appendChild(defaultOpt);
+            }
+        });
 
         function addZastep() {
             zastepCounter++;
@@ -515,16 +572,16 @@
             statusMsg.innerText = '⏳ Wysyłanie raportu na Discorda...';
             submitBtn.disabled = true;
 
-            const kdr = document.getElementById('kdr').value.trim();
-            const uprawnienie = document.getElementById('uprawnienie').value.trim();
-            const kategoria = document.getElementById('kategoria').value.trim();
-            const wielkosc = document.getElementById('wielkosc').value.trim();
-            const sis = document.getElementById('sis').value.trim();
-            const przybycie = document.getElementById('godzina_przybycia').value;
-            const zakonczenie = document.getElementById('godzina_zakonczenia').value;
-            const lokalizacja = document.getElementById('lokalizacja').value.trim();
-            const opis = document.getElementById('opis').value.trim();
-            const sporzadzajacy = document.getElementById('sporzadzajacy').value.trim();
+            const kdr = formatValue(document.getElementById('kdr').value);
+            const uprawnienie = formatValue(document.getElementById('uprawnienie').value);
+            const kategoria = formatValue(document.getElementById('kategoria').value);
+            const wielkosc = formatValue(document.getElementById('wielkosc').value);
+            const sis = formatValue(document.getElementById('sis').value);
+            const przybycie = formatValue(document.getElementById('godzina_przybycia').value);
+            const zakonczenie = formatValue(document.getElementById('godzina_zakonczenia').value);
+            const lokalizacja = formatValue(document.getElementById('lokalizacja').value);
+            const opis = formatValue(document.getElementById('opis').value);
+            const sporzadzajacy = formatValue(document.getElementById('sporzadzajacy').value);
 
             // Budowanie tekstu dla zastępów
             let zastepyText = "";
@@ -533,7 +590,7 @@
             zastepyBoxes.forEach((box, index) => {
                 const getVal = (cls) => {
                     const inp = box.querySelector(cls);
-                    return (inp && inp.value.trim()) ? inp.value.trim() : "Brak";
+                    return inp ? formatValue(inp.value) : "Brak";
                 };
 
                 zastepyText += `🚒 **Zastęp ${index + 1}**\n`;
@@ -553,13 +610,8 @@
             const footerText = `Dziś o ${hours}:${minutes}`;
 
             let description = 
-                `🔴 **Kierujący działaniami**\n${kdr}\n\n`;
-
-            if (uprawnienie) {
-                description += `📑 **Uprawnienie**\n${uprawnienie}\n\n`;
-            }
-
-            description += 
+                `🔴 **Kierujący działaniami**\n${kdr}\n\n` +
+                `📑 **Uprawnienie**\n${uprawnienie}\n\n` +
                 `📁 **Kategoria**\n${kategoria}\n\n` +
                 `📏 **Wielkość**\n${wielkosc}\n\n` +
                 `👤 **Obsada PSP**\n${zastepyText}` +
