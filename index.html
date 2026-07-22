@@ -1,4 +1,4 @@
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
@@ -175,7 +175,6 @@ html_content = """<!DOCTYPE html>
             line-height: 1.5;
         }
 
-        /* Custom Time Picker icon styling */
         input[type="time"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
             cursor: pointer;
@@ -335,19 +334,29 @@ html_content = """<!DOCTYPE html>
                     <option value="">-- Wybierz opcjonalnie --</option>
                     <option value="Dowódca Zastępu">Dowódca Zastępu</option>
                     <option value="Kierujący Działaniami Ratowniczymi">Kierujący Działaniami Ratowniczymi</option>
-                    <option value="Dowódca Sekcji">Dowódca Sekcji</option>
-                    <option value="Dowódca Pododdziału">Dowódca Pododdziału</option>
                 </select>
             </div>
 
             <div class="grid-2">
                 <div class="field">
                     <label>Kategoria zdarzenia</label>
-                    <input type="text" id="kategoria" required placeholder="np. MZ - Miejscowe Zagrożenie">
+                    <select id="kategoria" required>
+                        <option value="">-- Wybierz kategorię --</option>
+                        <option value="Pożar">Pożar</option>
+                        <option value="MZ - Miejscowe Zagrożenie">MZ - Miejscowe Zagrożenie</option>
+                        <option value="AF - Alarm Fałszywy">AF - Alarm Fałszywy</option>
+                    </select>
                 </div>
                 <div class="field">
                     <label>Wielkość zdarzenia</label>
-                    <input type="text" id="wielkosc" required placeholder="np. Lokalne / Małe / Średnie">
+                    <select id="wielkosc" required>
+                        <option value="">-- Wybierz wielkość --</option>
+                        <option value="Lokalne">Lokalne</option>
+                        <option value="Małe">Małe</option>
+                        <option value="Średnie">Średnie</option>
+                        <option value="Duże">Duże</option>
+                        <option value="Bardzo Duże">Bardzo Duże</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -565,7 +574,7 @@ html_content = """<!DOCTYPE html>
                 embeds: [
                     {
                         title: "📋 Karta Zdarzenia",
-                        color: 3447003, // Niebieski pasek z boku jak w oryginale
+                        color: 3447003,
                         description: description,
                         footer: {
                             text: footerText
@@ -599,6 +608,3 @@ html_content = """<!DOCTYPE html>
     </script>
 </body>
 </html>
-"""
-
-print("HTML with select options updated.")
