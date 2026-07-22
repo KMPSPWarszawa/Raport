@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karta Zdarzenia</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Karta Zdarzenia</h1>
+
+    <form id="reportForm">
+
+        <section class="card">
+
+            <label>Kierujący działaniami</label>
+            <input type="text" id="kdr">
+
+            <label>Wypełnianie KZ z uprawnienia</label>
+            <input type="text" id="uprawnienie">
+
+            <label>Kategoria zdarzenia</label>
+            <select id="kategoria">
+                <option>Pożar</option>
+                <option>Miejscowe Zagrożenie</option>
+                <option>Alarm Fałszywy</option>
+            </select>
+
+            <label>Wielkość zdarzenia</label>
+            <select id="wielkosc">
+                <option>Małe</option>
+                <option>Średnie</option>
+                <option>Duże</option>
+                <option>Bardzo duże</option>
+            </select>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Obsada zastępów PSP</h2>
+
+            <div id="units">
+
+                <div class="unit">
+
+                    <h3>Zastęp 1</h3>
+
+                    <label>Pojazd</label>
+                    <input type="text" class="pojazd">
+
+                    <label>Kierowca</label>
+                    <input type="text" class="kierowca">
+
+                    <label>Dowódca</label>
+                    <input type="text" class="dowodca">
+
+                    <label>R1</label>
+                    <input type="text" class="r1">
+
+                    <label>Pomocnik R1</label>
+                    <input type="text" class="pr1">
+
+                    <label>R2</label>
+                    <input type="text" class="r2">
+
+                    <label>Pomocnik R2</label>
+                    <input type="text" class="pr2">
+
+                </div>
+
+            </div>
+
+            <button type="button" id="addUnit">
+                + Dodaj kolejny zastęp
+            </button>
+
+        </section>
+
+        <section class="card">
+
+            <label>Zadysponowane SiŚ</label>
+            <input type="text" id="sis">
+
+            <label>Godzina przybycia</label>
+            <input type="time" id="arrival">
+
+            <label>Godzina zakończenia</label>
+            <input type="time" id="finish">
+
+            <label>Lokalizacja</label>
+            <input type="text" id="location">
+
+            <label>Opis zdarzenia</label>
+            <textarea id="description" rows="6"></textarea>
+
+            <label>Sporządzający</label>
+            <input type="text" id="author">
+
+        </section>
+
+        <div class="center">
+            <button type="submit" class="sendButton">
+                Wyślij raport
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
