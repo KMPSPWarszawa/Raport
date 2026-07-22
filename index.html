@@ -4,112 +4,420 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karta Zdarzenia</title>
-
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #eef0f2;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+        h1 {
+            color: #b30000;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            text-align: center;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            background-color: #e2e4e7;
+            border-left: 6px solid #b30000;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+        .card-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #111;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .field:last-child {
+            margin-bottom: 0;
+        }
+        .field label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: #111;
+        }
+        .field input, .field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            outline: none;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+        .field input:focus, .field textarea:focus {
+            border-color: #b30000;
+        }
+        .field textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .zastep-box {
+            background-color: #d5d8dc;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .zastep-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .zastep-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #111;
+        }
+        .btn-remove {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .btn-remove:hover {
+            background: #c9302c;
+        }
+        .btn {
+            background-color: #b30000;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #800000;
+        }
+        .btn-submit-container {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+        #status-msg {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .status-success {
+            color: #2e7d32;
+        }
+        .status-error {
+            color: #c62828;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-
     <h1>Karta Zdarzenia</h1>
 
-    <form id="reportForm">
-
-        <section class="card">
-
-            <label>Kierujący działaniami</label>
-            <input type="text" id="kdr">
-
-            <label>Wypełnianie KZ z uprawnienia</label>
-            <input type="text" id="uprawnienie">
-
-            <label>Kategoria zdarzenia</label>
-            <select id="kategoria">
-                <option>Pożar</option>
-                <option>Miejscowe Zagrożenie</option>
-                <option>Alarm Fałszywy</option>
-            </select>
-
-            <label>Wielkość zdarzenia</label>
-            <select id="wielkosc"></select>
-
-        </section>
-
-        <section class="card">
-
-            <h2>Obsada zastępów PSP</h2>
-
-            <div id="units">
-
-                <div class="unit">
-
-                    <h3>Zastęp 1</h3>
-
-                    <label>Pojazd</label>
-                    <input type="text" class="pojazd">
-
-                    <label>Kierowca</label>
-                    <input type="text" class="kierowca">
-
-                    <label>Dowódca</label>
-                    <input type="text" class="dowodca">
-
-                    <label>R1</label>
-                    <input type="text" class="r1">
-
-                    <label>Pomocnik R1</label>
-                    <input type="text" class="pr1">
-
-                    <label>R2</label>
-                    <input type="text" class="r2">
-
-                    <label>Pomocnik R2</label>
-                    <input type="text" class="pr2">
-
-                </div>
-
+    <form id="reportForm" class="form-container">
+        <!-- Sekcja 1: Podstawowe informacje -->
+        <div class="card">
+            <div class="field">
+                <label>Kierujący działaniami</label>
+                <input type="text" id="kdr" required placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
             </div>
-
-            <button type="button" id="addUnit">
-                + Dodaj kolejny zastęp
-            </button>
-
-        </section>
-
-        <section class="card">
-
-            <label>Zadysponowane SiŚ</label>
-            <input type="text" id="sis">
-
-            <label>Godzina przybycia</label>
-            <input type="time" id="arrival">
-
-            <label>Godzina zakończenia</label>
-            <input type="time" id="finish">
-
-            <label>Lokalizacja</label>
-            <input type="text" id="location">
-
-            <label>Opis zdarzenia</label>
-            <textarea id="description" rows="6"></textarea>
-
-            <label>Sporządzający</label>
-            <input type="text" id="author">
-
-        </section>
-
-        <div class="center">
-            <button type="submit" class="sendButton">
-                Wyślij raport
-            </button>
+            <div class="field">
+                <label>Wypełnianie KZ z uprawnienia</label>
+                <input type="text" id="uprawnienie" placeholder="Opcjonalnie">
+            </div>
+            <div class="field">
+                <label>Kategoria zdarzenia</label>
+                <input type="text" id="kategoria" required placeholder="np. MZ - Miejscowe Zagrożenie">
+            </div>
+            <div class="field">
+                <label>Wielkość zdarzenia</label>
+                <input type="text" id="wielkosc" required placeholder="np. Lokalne">
+            </div>
         </div>
 
+        <!-- Sekcja 2: Obsada Zastępów -->
+        <div class="card">
+            <div class="card-title">Obsada zastępów PSP</div>
+            <div id="zastepy-container">
+                <!-- Dynamicznie dodawane zastępy -->
+            </div>
+            <button type="button" class="btn" onclick="addZastep()">+ Dodaj kolejny zastęp</button>
+        </div>
+
+        <!-- Sekcja 3: Szczegóły akcji -->
+        <div class="card">
+            <div class="field">
+                <label>Zadysponowane SiŚ</label>
+                <input type="text" id="sis" required placeholder="np. 401-51, 409-71">
+            </div>
+            <div class="field">
+                <label>Godzina przybycia</label>
+                <input type="time" id="godzina_przybycia" required>
+            </div>
+            <div class="field">
+                <label>Godzina zakończenia</label>
+                <input type="time" id="godzina_zakonczenia" required>
+            </div>
+            <div class="field">
+                <label>Lokalizacja</label>
+                <input type="text" id="lokalizacja" required placeholder="np. Bytów, ul Styp-Rekowskiego 6">
+            </div>
+            <div class="field">
+                <label>Opis zdarzenia</label>
+                <textarea id="opis" required placeholder="Opisz przebieg zdarzenia oraz podjęte działania..."></textarea>
+            </div>
+            <div class="field">
+                <label>Sporządzający</label>
+                <input type="text" id="sporzadzajacy" required placeholder="np. DĄBROWSKI Nikodem — JRG1 [St.Str.]">
+            </div>
+        </div>
+
+        <div class="btn-submit-container">
+            <button type="submit" id="submitBtn" class="btn" style="padding: 12px 35px; font-size: 1rem;">Wyślij raport</button>
+            <div id="status-msg"></div>
+        </div>
     </form>
 
-</div>
+    <script>
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1529522413988085923/a5UQzsWkWak_Sil5RaelCEgcc5mXIrKwZSp-_dgtPzxnxLePiCdltyeLOWHybLCMk9YZ";
+        let zastepCounter = 0;
 
-<script src="config.js"></script>
-<script src="script.js"></script>
+        function addZastep() {
+            zastepCounter++;
+            const container = document.getElementById('zastepy-container');
+            
+            const zastepDiv = document.createElement('div');
+            zastepDiv.className = 'zastep-box';
+            zastepDiv.id = `zastep-${zastepCounter}`;
 
+            const canRemove = container.children.length > 0;
+
+            zastepDiv.innerHTML = `
+                <div class="zastep-header">
+                    <div class="zastep-title">Zastęp ${container.children.length + 1}</div>
+                    ${canRemove ? `<button type="button" class="btn-remove" onclick="removeZastep('${zastepDiv.id}')">Usuń zastęp</button>` : ''}
+                </div>
+                <div class="field">
+                    <label>Pojazd</label>
+                    <input type="text" class="z-pojazd" placeholder="np. 401-51">
+                </div>
+                <div class="field">
+                    <label>Kierowca</label>
+                    <input type="text" class="z-kierowca">
+                </div>
+                <div class="field">
+                    <label>Dowódca</label>
+                    <input type="text" class="z-dowodca">
+                </div>
+                <div class="field">
+                    <label>R1</label>
+                    <input type="text" class="z-r1">
+                </div>
+                <div class="field">
+                    <label>Pomocnik R1</label>
+                    <input type="text" class="z-pom-r1">
+                </div>
+                <div class="field">
+                    <label>R2</label>
+                    <input type="text" class="z-r2">
+                </div>
+                <div class="field">
+                    <label>Pomocnik R2</label>
+                    <input type="text" class="z-pom-r2">
+                </div>
+            `;
+            container.appendChild(zastepDiv);
+            reindexZastepy();
+        }
+
+        function removeZastep(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.remove();
+                reindexZastepy();
+            }
+        }
+
+        function reindexZastepy() {
+            const boxes = document.querySelectorAll('.zastep-box');
+            boxes.forEach((box, index) => {
+                const title = box.querySelector('.zastep-title');
+                if (title) {
+                    title.innerText = `Zastęp ${index + 1}`;
+                }
+            });
+        }
+
+        // Dodaj domyślnie 1 zastęp
+        addZastep();
+
+        document.getElementById('reportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const statusMsg = document.getElementById('status-msg');
+            const submitBtn = document.getElementById('submitBtn');
+
+            statusMsg.className = '';
+            statusMsg.innerText = 'Wysyłanie raportu na Discorda...';
+            submitBtn.disabled = true;
+
+            const kdr = document.getElementById('kdr').value.trim();
+            const uprawnienie = document.getElementById('uprawnienie').value.trim();
+            const kategoria = document.getElementById('kategoria').value.trim();
+            const wielkosc = document.getElementById('wielkosc').value.trim();
+            const sis = document.getElementById('sis').value.trim();
+            const przybycie = document.getElementById('godzina_przybycia').value;
+            const zakonczenie = document.getElementById('godzina_zakonczenia').value;
+            const lokalizacja = document.getElementById('lokalizacja').value.trim();
+            const opis = document.getElementById('opis').value.trim();
+            const sporzadzajacy = document.getElementById('sporzadzajacy').value.trim();
+
+            // Budowanie tekstu dla zastępów
+            let zastepyText = "";
+            const zastepyBoxes = document.querySelectorAll('.zastep-box');
+
+            zastepyBoxes.forEach((box, index) => {
+                const getVal = (cls) => {
+                    const inp = box.querySelector(cls);
+                    return (inp && inp.value.trim()) ? inp.value.trim() : "Brak";
+                };
+
+                zastepyText += `🚒 **Zastęp ${index + 1}**
+`;
+                zastepyText += `Pojazd: ${getVal('.z-pojazd')}
+`;
+                zastepyText += `Kierowca: ${getVal('.z-kierowca')}
+`;
+                zastepyText += `Dowódca: ${getVal('.z-dowodca')}
+`;
+                zastepyText += `R1: ${getVal('.z-r1')}
+`;
+                zastepyText += `Pomocnik R1: ${getVal('.z-pom-r1')}
+`;
+                zastepyText += `R2: ${getVal('.z-r2')}
+`;
+                zastepyText += `Pomocnik R2: ${getVal('.z-pom-r2')}
+
+`;
+            });
+
+            // Sformatuj godzinę do stopki (np. "Dziś o 18:34")
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const footerText = `Dziś o ${hours}:${minutes}`;
+
+            let description = 
+                `🔴 **Kierujący działaniami**
+${kdr}
+
+`;
+
+            if (uprawnienie) {
+                description += `📑 **Uprawnienie**
+${uprawnienie}
+
+`;
+            }
+
+            description += 
+                `📁 **Kategoria**
+${kategoria}
+
+` +
+                `📏 **Wielkość**
+${wielkosc}
+
+` +
+                `👤 **Obsada PSP**
+${zastepyText}` +
+                `📍 **Lokalizacja**
+${lokalizacja}
+
+` +
+                `⏱️ **Przybycie**
+${przybycie}
+
+` +
+                `⏱️ **Zakończenie**
+${zakonczenie}
+
+` +
+                `🚒 **SiŚ**
+${sis}
+
+` +
+                `📝 **Opis**
+${opis}
+
+` +
+                `✍️ **Sporządzający**
+${sporzadzajacy}`;
+
+            const payload = {
+                embeds: [
+                    {
+                        title: "📋 Karta Zdarzenia",
+                        color: 3447003, // Jasno-niebieski pasek z boku
+                        description: description,
+                        footer: {
+                            text: footerText
+                        }
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    statusMsg.className = 'status-success';
+                    statusMsg.innerText = '✅ Raport został pomyślnie wysłany na Discorda!';
+                } else {
+                    statusMsg.className = 'status-error';
+                    statusMsg.innerText = `❌ Błąd wysyłania (Kod HTTP: ${response.status})`;
+                }
+            } catch (err) {
+                statusMsg.className = 'status-error';
+                statusMsg.innerText = '❌ Wystąpił błąd połączenia z serwerem Discorda.';
+                console.error(err);
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
