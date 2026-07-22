@@ -234,3 +234,7 @@ reportForm.addEventListener("submit", async (e) => {
     }
 
 });
+
+console.log("Script działa");
+console.log(document.getElementById("kategoria"));
+console.log(document.getElementById("wielkosc"));
