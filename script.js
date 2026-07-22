@@ -4,6 +4,58 @@ const units = document.getElementById("units");
 
 let unitCount = 1;
 
+const kategoria = document.getElementById("kategoria");
+const wielkosc = document.getElementById("wielkosc");
+
+function aktualizujWielkosc() {
+
+    wielkosc.innerHTML = "";
+
+    let opcje = [];
+
+    switch (kategoria.value) {
+
+        case "Pożar":
+            opcje = [
+                "Małe",
+                "Średnie",
+                "Duże",
+                "Bardzo duże"
+            ];
+            break;
+
+        case "Miejscowe Zagrożenie":
+            opcje = [
+                "Małe",
+                "Lokalne",
+                "Średnie",
+                "Duże"
+            ];
+            break;
+
+        case "Alarm Fałszywy":
+            opcje = [
+                "Złośliwy",
+                "W Instancji Wykrywania",
+                "W Dobrej Wierze"
+            ];
+            break;
+
+    }
+
+    opcje.forEach(opcja => {
+        const option = document.createElement("option");
+        option.textContent = opcja;
+        option.value = opcja;
+        wielkosc.appendChild(option);
+    });
+
+}
+
+kategoria.addEventListener("change", aktualizujWielkosc);
+
+aktualizujWielkosc();
+
 addUnit.addEventListener("click", () => {
 
     unitCount++;
